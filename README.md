@@ -24,3 +24,21 @@
 
 欢迎各位同学、老师批评指正。如有相关研究交流或合作意向，可在项目中留言或通过邮箱联系：yuxuanliu0128@163.com。来信请提前注明来意。
 
+🎉 Thrilled to share that our paper SMP-UWGS: Coupled Physics-Geometry Optimization for Scalable Multi-Partition Underwater 3D Reconstruction has been accepted to ECCV 2026!
+
+🌊 The Challenge: Underwater 3D reconstruction struggles with light attenuation, backscattering, turbidity, and depth-dependent color distortion, making it hard to balance quality, color consistency, and training efficiency.
+
+💡 Our Solution: We propose SMP-UWGS, an underwater 3DGS framework coupling physics modeling with geometric optimization. It uses multi-partition Gaussian representations for efficient large-scale optimization and a differentiable physics-based rendering module to jointly estimate optical parameters, accurately modeling depth-dependent attenuation and scattering.
+
+📦 Code, paper, and project page coming soon. Stay tuned!
+
+🙏 Acknowledgments:
+• Guowei Ni for guidance on research direction
+• Xiurui Guo for help with writing
+• Chengwei Cao & Zhiwei Wu for valuable feedback during revision & rebuttal
+• My partners at Willand for trust and guidance
+• Shuai Liu & Ling Xue for funding support
+• Junjun for her endless companionship and support throughout this journey
+
+💬 I welcome any feedback! For research discussions or collaborations, please leave a comment or email me at mailto:yuxuanliu0128@163.com (please briefly state your purpose).
+#ECCV2026 #Underwater3DReconstruction #3DGS #ComputerVision #DeepLearning
