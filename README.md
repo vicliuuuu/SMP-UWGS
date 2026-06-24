@@ -33,11 +33,17 @@
 📦 Code, paper, and project page coming soon. Stay tuned!
 
 🙏 Acknowledgments:
+
 • Guowei Ni for guidance on research direction
+
 • Xiurui Guo for help with writing
+
 • Chengwei Cao & Zhiwei Wu for valuable feedback during revision & rebuttal
+
 • My partners at Willand for trust and guidance
+
 • Shuai Liu & Ling Xue for funding support
+
 • Junjun for her endless companionship and support throughout this journey
 
 💬 I welcome any feedback! For research discussions or collaborations, please leave a comment or email me at mailto:yuxuanliu0128@163.com (please briefly state your purpose).
