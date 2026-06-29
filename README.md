@@ -1,50 +1,81 @@
-# SMP-UWGS
+# SMP-UWGS (Core Methods)
 
-  Official project page for:
+**SMP-UWGS: Coupled Physics-Geometry Optimization for Scalable Multi-Partition Underwater 3D Reconstruction**<br>
+ECCV 2026 · https://github.com/vicliuuuu/SMP-UWGS
 
-  **SMP-UWGS: Coupled Physics-Geometry Optimization for Scalable Multi-Partition Underwater 3D Reconstruction**
+本仓库仅发布论文中的**核心方法模块**（SMP 多分区 + DPR-Net + 混合物理损失），**不包含**完整训练、渲染与评测流水线。端到端训练与评估流程请参考 [SeaSplat](https://arxiv.org/abs/2503.10600) 及 3D Gaussian Splatting / VastGaussian 的工程组织方式，将下列模块接入其训练循环即可。
 
-  Accepted by ECCV 2026.
+## 环境
 
-  Code, data, pretrained models, and project materials will be released soon.
+与内部开发环境一致，使用 Conda 环境 `sea`：
 
-  Project page: https://vicliuuuu.github.io/SMP-UWGS/
+```bash
+conda activate sea
+pip install -r requirements.txt
+```
 
-非常荣幸地宣布，我的论文SMP-UWGS: Coupled Physics-Geometry Optimization for Scalable Multi-Partition Underwater 3D Reconstruction已被ECCV 2026接收。
+主要依赖：`torch==2.1.0+cu121`、`torchvision==0.16.0`、`kornia==0.7.3`、`numpy==1.26.0`、`plyfile`、`shapely`、`scipy` 等（见 `requirements.txt`）。
 
-该工作聚焦于大规模水下三维重建任务。水下场景中普遍存在光衰减、后向散射、浑浊介质以及深度相关颜色失真等问题，使得现有三维重建方法在复杂水下环境中难以同时兼顾重建质量、颜色一致性和训练效率。
+## 目录结构
 
-为此，我提出了SMP-UWGS，一种耦合物理建模与几何优化的水下3DGS框架。该方法通过多分区Gaussian表示实现大规模场景的高效区域优化，并引入可微物理渲染模块，对水下光学参数进行估计与联合优化，从而更好地建模深度相关的衰减和散射效应。
+```
+SMP-UWGS/
+├── dpr_net/                    # DPR-Net 可微物理渲染
+│   ├── water_param_predictor.py   # WaterParamPredict (U-Net + SE-ResNet + Attention Gate)
+│   ├── dbdr.py                    # DBDR: AttenuateNetV3 + BackscatterNetV2
+│   ├── formation.py               # 水下图像形成与恢复 I = J·e^{-β_d z} + B_∞(1-e^{-β_b z})
+│   ├── pa_dcp.py                  # Physics-Aware Dark Channel Prior
+│   ├── losses.py                  # 混合物理-统计损失 (PA-DCP, BS/AT, α-bg 等)
+│   └── depth_losses.py            # 边缘感知深度平滑
+└── smp/                        # SMP-GAUSSIAN 多分区架构
+    ├── data_partition.py          # 动态空间分区 + BARE 边界扩展 + 跨分区可见性融合
+    ├── data_partition_depth.py    # DARWS 深度感知区域权重
+    ├── seamless_merging.py        # 分区高斯无缝合并
+    ├── appearance_network.py      # FiLM 外观解耦
+    ├── graham_scan.py             # 分区可见性（凸包-图像交集）
+    └── geom.py                    # 分区用基础几何类型 (BasicPointCloud, CameraInfo, storePly)
+```
 
-最终论文、代码及更多项目材料将陆续整理并发布，敬请关注。
+## 论文模块对照
 
-我需要诚挚感谢倪国威师兄在研究构思与方向上的建议，感谢郭修睿在论文写作过程中的帮助，感谢曹城玮与吴志伟师兄在论文修改和 rebuttal 阶段提出的宝贵建议。
+| 论文 | 代码 |
+|------|------|
+| SMP-GAUSSIAN / BARE / 跨分区一致性 | `smp/data_partition.py`, `smp/seamless_merging.py` |
+| DARWS | `smp/data_partition_depth.py` |
+| WaterParamPredict | `dpr_net/water_param_predictor.py` |
+| DBDR | `dpr_net/dbdr.py` |
+| 水下图像形成方程 | `dpr_net/formation.py` |
+| FiLM 外观解耦 | `smp/appearance_network.py` |
+| PA-DCP 与混合损失 | `dpr_net/pa_dcp.py`, `dpr_net/losses.py`, `dpr_net/depth_losses.py` |
 
-最后，感谢 Willand 的伙伴们给予我的信任、包容与指导，感谢刘帅和薛凌在实验经费方面提供的支持，感谢君君在长期研究与写作过程中给予的陪伴、理解与支持。
+## 使用说明
 
-欢迎各位同学、老师批评指正。如有相关研究交流或合作意向，可在项目中留言或通过邮箱联系：yuxuanliu0128@163.com。来信请提前注明来意。
+本发布包提供可复用的 `nn.Module` 与分区算法，**不含** `train.py` / `render.py` / `metrics.py` 及示例 shell。集成时建议：
 
-🎉 Thrilled to share that our paper SMP-UWGS: Coupled Physics-Geometry Optimization for Scalable Multi-Partition Underwater 3D Reconstruction has been accepted to ECCV 2026!
+1. 在 3DGS 训练循环中渲染深度图，调用 `WaterParamPredictor` 初始化 `AttenuateNetV3` / `BackscatterNetV2`；
+2. 用 `apply_underwater_formation` 合成水下图并计算 `dpr_net.losses` 中各项损失；
+3. 大场景训练前调用 `ProgressiveDataPartitioning`（`data_partition_depth.py`）做分区与 DARWS 权重；
+4. 分区训练结束后用 `seamless_merge` 合并高斯点云。
 
-🌊 The Challenge: Underwater 3D reconstruction struggles with light attenuation, backscattering, turbidity, and depth-dependent color distortion, making it hard to balance quality, color consistency, and training efficiency.
+完整数据加载、多 GPU 调度、checkpoint 与指标计算请参照 SeaSplat / VastGaussian 仓库自行拼装。
 
-💡 Our Solution: We propose SMP-UWGS, an underwater 3DGS framework coupling physics modeling with geometric optimization. It uses multi-partition Gaussian representations for efficient large-scale optimization and a differentiable physics-based rendering module to jointly estimate optical parameters, accurately modeling depth-dependent attenuation and scattering.
+## 未包含内容
 
-📦 Code, paper, and project page coming soon. Stay tuned!
+- OTNN 等涉密数据集与专有预处理
+- 完整训练 / 渲染 / 评测脚本
+- 3DGS CUDA rasterizer 子模块（需从上游 3DGS 单独获取并编译）
 
-🙏 Acknowledgments:
+## Citation
 
-• Guowei Ni for guidance on research direction
+```bibtex
+@inproceedings{liu2026smpuwgs,
+  title={SMP-UWGS: Coupled Physics-Geometry Optimization for Scalable Multi-Partition Underwater 3D Reconstruction},
+  author={Liu, Yuxuan and Zhang, Jinhui},
+  booktitle={European Conference on Computer Vision (ECCV)},
+  year={2026}
+}
+```
 
-• Xiurui Guo for help with writing
+## License
 
-• Chengwei Cao & Zhiwei Wu for valuable feedback during revision & rebuttal
-
-• My partners at Willand for trust and guidance
-
-• Shuai Liu & Ling Xue for funding support
-
-• Junjun for her endless companionship and support throughout this journey
-
-💬 I welcome any feedback! For research discussions or collaborations, please leave a comment or email me at mailto:yuxuanliu0128@163.com (please briefly state your purpose).
-#ECCV2026 #Underwater3DReconstruction #3DGS #ComputerVision #DeepLearning
+见 `LICENSE` 及上游 3DGS / VastGaussian 许可条款。

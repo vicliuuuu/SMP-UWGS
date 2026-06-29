@@ -1,0 +1,12 @@
+torch==2.1.0
+torchvision==0.16.0
+numpy==1.26.0
+scipy==1.15.3
+kornia==0.7.3
+plyfile==0.8.1
+tqdm==4.66.5
+matplotlib==3.10.7
+opencv-python==4.6.0.66
+open3d==0.18.0
+trimesh==4.4.4
+shapely==2.0.7
