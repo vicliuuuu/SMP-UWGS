@@ -92,11 +92,11 @@ SMP-UWGS/
 
 ## Acknowledgements
 
-我需要诚挚感谢倪国威师兄在研究构思与方向上的建议，感谢郭修睿在论文写作过程中的帮助，感谢晨洋师兄在实验经费相关事宜中提供的支持，感谢曹城玮与吴志伟师兄在论文修改和 rebuttal 阶段提出的宝贵建议。
+我需要诚挚感谢倪国威师兄在研究构思与方向上的建议，感谢郭修睿在论文写作过程中的帮助，感谢吴晨洋师兄在实验经费相关事宜中提供的支持，感谢曹城玮与吴志伟师兄在论文修改和 rebuttal 阶段提出的宝贵建议。
 
 最后，感谢 Willand 的伙伴们给予我的信任、包容与指导，感谢刘帅和薛凌在实验经费方面提供的支持，感谢君君在长期研究与写作过程中给予的陪伴、理解与支持。
 
-We also thank Guowei Ni for guidance on the research direction, Xiurui Guo for help with writing, Chengwei Cao and Zhiwei Wu for valuable feedback during revision and rebuttal, our partners at Willand for trust and guidance, Shuai Liu and Ling Xue for funding support, and Junjun for long-term support throughout this work.
+We also thank Guowei Ni for guidance on the research direction, Xiurui Guo for help with writing, Chenyang Wu for supportion with reimbursement, Chengwei Cao and Zhiwei Wu for valuable feedback during revision and rebuttal, our partners at Willand for trust and guidance, Shuai Liu and Ling Xue for funding support, and Junjun for long-term support throughout this work.
 
 ## Contact
 
