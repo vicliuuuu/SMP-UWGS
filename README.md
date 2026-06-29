@@ -8,7 +8,7 @@ Accepted by ECCV 2026.
 - Project page: https://vicliuuuu.github.io/SMP-UWGS/
 - GitHub: https://github.com/vicliuuuu/SMP-UWGS
 
-本仓库已发布论文中的**核心方法模块**（SMP 多分区 + DPR-Net + 混合物理损失）。完整训练、渲染、评测流水线、数据与更多项目材料将陆续整理发布。
+本仓库已发布论文中的**核心方法模块**（SMP 多分区 + DPR-Net + 混合物理损失）。
 
 ## Overview
 
